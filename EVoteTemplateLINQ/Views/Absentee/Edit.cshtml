@@ -1,0 +1,286 @@
+﻿@model EVote.DataModels.VoterDataModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<br /><br />
+
+<div style="font-size:1.2em;">
+    Edit Absentee Voter
+</div>
+
+<div style="color:red">
+    @ViewBag.Results
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr class="row-divider" />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.BarCode)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.VoterID, "Roll Number", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3" >
+                <div style="margin-top:7px;">
+                    @Html.DisplayFor(model => model.VoterID, new { htmlAttributes = new { @class = "form-control" } })                    
+                </div>
+                @Html.ValidationMessageFor(model => model.VoterID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                @Html.LabelFor(model => model.FirstName, "First Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                </div>
+
+                @Html.LabelFor(model => model.MiddleName, "Middle Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.EditorFor(model => model.MiddleName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.MiddleName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                @Html.LabelFor(model => model.LastName, "Last Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                </div>
+
+                @Html.LabelFor(model => model.Generation, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.EditorFor(model => model.Generation, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Generation, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        @if (ViewBag.Maiden == "True")
+        {
+        <div class="row">
+            <div class="form-group">
+                @Html.LabelFor(model => model.MaidenName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.EditorFor(model => model.MaidenName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.MaidenName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        }
+        else
+        {
+            @Html.HiddenFor(model => model.MaidenName, new { htmlAttributes = new { @class = "form-control" } })
+        }
+
+        <hr class="row-divider" />
+
+        <div class="row">
+            <div class="form-group">
+                @Html.LabelFor(model => model.DOB, "Date Of Birth", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.EditorFor(model => model.DOBSearch, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DOBSearch, "", new { @class = "text-danger" })
+                </div>
+
+                @if (Session["ShowDistrict"].ToString() == "True")
+                {
+                @Html.LabelFor(model => model.District, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.DropDownListFor(model => model.District, (IEnumerable<SelectListItem>)ViewBag.DistrictList, null, new { @class = "form-control" })
+                    @Html.HiddenFor(model => model.District)
+                    @Html.ValidationMessageFor(model => model.District, "", new { @class = "text-danger" })
+                </div>
+                }
+            </div>
+        </div>
+
+        <hr class="row-divider" />
+
+        <div class="row">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Address1, "Address 1", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.EditorFor(model => model.Address1, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Address1, "", new { @class = "text-danger" })
+                </div>
+            
+                @Html.LabelFor(model => model.Address2, "Address 2", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.EditorFor(model => model.Address2, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Address2, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+                </div>
+            
+                @Html.LabelFor(model => model.State, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.EditorFor(model => model.State, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.State, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Zip, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.EditorFor(model => model.Zip, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Zip, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <hr class="row-divider" />
+
+        <div class="row">
+            <label class="control-label" style="font-weight:bold; margin-left:50px;">
+                @Html.CheckBoxFor(model => model.TempUsed)
+                &nbsp;Temp Address Used
+            </label>
+        </div>
+
+        <br />
+
+            <div class="row">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.TempAddress1, "Temp Address 1", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.TempAddress1, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TempAddress1, "", new { @class = "text-danger" })
+                    </div>
+
+                    @Html.LabelFor(model => model.TempAddress2, "Temp Address 2", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.TempAddress2, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TempAddress2, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.TempCity, "Temp City", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.TempCity, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TempCity, "", new { @class = "text-danger" })
+                    </div>
+
+                    @Html.LabelFor(model => model.TempState, "Temp State", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.TempState, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TempState, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.TempZip, "Temp Zip", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.TempZip, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TempZip, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <hr class="row-divider" />
+        
+            @*@Html.HiddenFor(model => model.TempUsed)
+            @Html.HiddenFor(model => model.TempAddress1)
+            @Html.HiddenFor(model => model.TempAddress2)
+            @Html.HiddenFor(model => model.TempCity)
+            @Html.HiddenFor(model => model.TempState)
+            @Html.HiddenFor(model => model.TempZip)*@        
+
+        <div class="row">
+            <div class="form-group">
+                @Html.LabelFor(model => model.LogCode, "Voter Status", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @if (Model.LogCode < 7 || Convert.ToInt32(Session["RoleID"]) == 3)
+                    {
+                    @Html.DropDownListFor(model => model.LogCode, (IEnumerable<SelectListItem>)ViewBag.LogCodeList, null, new { @class = "form-control" })
+                    }
+                    else
+                    {
+                    <div style="margin-top:7px;">
+                        @ViewBag.VoterStatus
+                    </div>
+                    }
+                    @Html.HiddenFor(model => model.LogCode)
+                    @Html.ValidationMessageFor(model => model.LogCode, "", new { @class = "text-danger" })
+                </div>
+
+                @Html.LabelFor(model => model.UserName, "Voted At", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @if (Convert.ToInt32(Session["RoleID"]) == 3)
+                    {
+                    @Html.DropDownListFor(model => model.UserName, (IEnumerable<SelectListItem>)ViewBag.SitesList, null, new { @class = "form-control" })                    
+                    }
+                    else
+                    {
+                    <div style="margin-top:7px;">
+                        @Html.DisplayFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    }
+                    @Html.HiddenFor(model => model.UserName)
+                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div id="divHidden">
+            @Html.HiddenFor(model => model.ElectionID)
+            @Html.HiddenFor(model => model.DOBSearch)
+            @Html.HiddenFor(model => model.ComboNo)
+            @Html.HiddenFor(model => model.VoterID)
+            @Html.HiddenFor(model => model.PhysicalAddress1)
+            @Html.HiddenFor(model => model.PhysicalAddress2)
+            @Html.HiddenFor(model => model.PhysicalCity)
+            @Html.HiddenFor(model => model.PhysicalState)
+            @Html.HiddenFor(model => model.PhysicalZip)
+            @Html.HiddenFor(model => model.PhysicalCSZ)
+            @Html.HiddenFor(model => model.OutofCountry)
+            @Html.HiddenFor(model => model.TempProvince)
+            @Html.HiddenFor(model => model.TempCountry)
+            @Html.HiddenFor(model => model.ActivityDate)
+            @Html.HiddenFor(model => model.UserName)
+            @Html.HiddenFor(model => model.LogDate)
+            @Html.HiddenFor(model => model.LogToday)
+
+            @Html.HiddenFor(model => model.VoterNo)
+            @*@Html.HiddenFor(model => model.SignRefused)*@
+        </div>
+        
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    @if (@ViewBag.SaveStatus == "True")
+                    {
+                        <a href="~/Absentee/Index" id="btnCancel" class="btn btn-success">Done</a>
+                    }
+                    else
+                    {
+                        <input type="submit" value="Save Changes" class="btn btn-success" />
+                        <a href="~/Absentee/Index" id="btnCancel" class="btn btn-danger">Cancel</a>
+                    }
+                </div>
+            </div>
+
+     </div> @*Form Horizontal*@
+}

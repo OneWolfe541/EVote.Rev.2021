@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Reports</h2>
+
+<div class="row">
+
+    <hr />
+
+    <div class="col-md-4">
+
+        @Html.ActionLink("Today's Activity Details", "TodaysActivityPDF", "Report")
+
+    </div>
+
+    @*<div class="col-md-4">
+
+            @Html.ActionLink("Activity To Date Details", "ActivityToDatePDF", "Report")
+
+        </div>*@
+
+    <div class="col-md-4">
+
+        @Html.ActionLink("Today's Activity Summary", "TodaysActivitySummaryPDF", "Report")
+
+    </div>
+
+</div>
+
+<div class="row">
+
+    <hr />
+
+    <div class="col-md-4">
+
+        @Html.ActionLink("Activity To Date Summary", "ActivityToDateSummaryPDF", "Report")
+
+    </div>
+
+    <div class="col-md-4">
+
+        @Html.ActionLink("Site Summary", "SiteSummaryPDF", "Report")
+
+    </div>
+</div>
+

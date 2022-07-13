@@ -1,0 +1,113 @@
+﻿@model IEnumerable<EVote.DataModels.tblSiteSummary>
+
+@{
+    ViewBag.Title = "SiteSummary";
+}
+
+<div class="col-md-6">
+    @if (ViewBag.Type == 1)
+    {
+        <h2>Election Day Site Summary</h2>
+    }
+    else
+    {
+        <h2>Early Voting Site Summary</h2>
+    }     
+</div>
+
+<div class="col-md-6" style="text-align:right;">
+    @if (ViewBag.Type == 1)
+    {
+        <a class="btn btn-success" href="@Url.Action("SiteSummary", new { type = 2 })" style="margin-top:20px;">Early Voting</a>
+    }
+    else
+    {
+        <a class="btn btn-success" href="@Url.Action("SiteSummary", new { type = 1 })" style="margin-top:20px;">Election Day</a>
+    }
+</div>
+
+
+<table class="table">
+    <tr>
+        <th style="padding-bottom:0;"></th>
+        <th style="padding-bottom:0;"></th>
+        <th colspan="2" style="text-align:center; padding-bottom:0;">Regular</th>
+        <th colspan="2" style="text-align:center; width:200px; padding-bottom:0;">Spoiled Ballots</th>
+        <th colspan="2" style="text-align:center; width:250px; padding-bottom:0;">Provisional Ballots</th>
+        <th style="padding-bottom:0;"></th>
+        <th style="padding-bottom:0;"></th>
+        <th style="padding-bottom:0;"></th>
+    </tr>
+    <tr>
+        <th style="border: 0 none white; text-align:center; padding-top:0;">
+            @Html.DisplayNameFor(model => model.SiteName)
+        </th>
+        <th style="border: 0 none white; text-align:center; padding-top:0;">
+            @Html.DisplayNameFor(model => model.Machine)
+        </th>
+        <th style="border: 0 none white; text-align:center; padding-top:0;">
+            Total
+        </th>
+        <th style="border: 0 none white; text-align:center; padding-top:0;">
+            Today
+        </th>
+        <th style="border: 0 none white; text-align:center; padding-top:0;">
+            Total
+        </th>
+        <th style="border: 0 none white; text-align:center; padding-top:0;">
+            Today
+        </th>
+        <th style="border: 0 none white; text-align:center; padding-top:0;">
+            Total
+        </th>
+        <th style="border: 0 none white; text-align:center; padding-top:0;">
+            Today
+        </th>
+        <th style="border: 0 none white; text-align:center; padding-top:0;">
+            Logged In/Out
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td style="text-align:left; border-right:1px dotted lightgray;">
+            @if (item.Machine == 1)
+            {
+            @Html.DisplayFor(modelItem => item.SiteName)
+            }
+        </td>
+        <td style="text-align:center; border-right:1px dotted lightgray;">
+            @Html.DisplayFor(modelItem => item.Machine)
+        </td>
+        <td style="text-align:center; border-right:1px dotted lightgray;">
+            @Html.DisplayFor(modelItem => item.Regular)
+        </td>
+        <td style="text-align:center; border-right:1px dotted lightgray;">
+            @Html.DisplayFor(modelItem => item.RegularToday)
+        </td>
+        <td style="text-align:center; border-right:1px dotted lightgray;">
+            @Html.DisplayFor(modelItem => item.Spoiled)
+        </td>
+        <td style="text-align:center; border-right:1px dotted lightgray;">
+            @Html.DisplayFor(modelItem => item.SpoiledToday)
+        </td>
+        <td style="text-align:center; border-right:1px dotted lightgray;">
+            @Html.DisplayFor(modelItem => item.Provisional)
+        </td>
+        <td style="text-align:center; border-right:1px dotted lightgray;">
+            @Html.DisplayFor(modelItem => item.ProvisionalToday)
+        </td>
+        <td style="text-align:center; ">
+            @if (item.LogState == 1)
+            {
+                <span class = "text-success">@Html.DisplayFor(modelItem => item.LogIn)</span>
+            }
+            else
+            {
+                <span class="text-danger">@Html.DisplayFor(modelItem => item.LogOut)</span>
+            }
+        </td>        
+    </tr>
+}
+
+</table>

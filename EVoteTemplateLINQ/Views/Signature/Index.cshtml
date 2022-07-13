@@ -1,0 +1,120 @@
+﻿@model EVote.DataModels.VoterDataModel
+
+
+    <form id="SignatureForm" method="post" action="~/Signature/Index">
+        <br /><br />
+        @*@if (Session["CheckNetwork"].ToString() == "True")
+        {
+            <a id="SaveSig" href="#" class="btn btn-success" onclick="SaveSignature()">Save Signature</a>
+        }
+        else
+        {
+            <input type="submit" value="Save Signature" class="btn btn-success" />
+        }*@
+        <input type="submit" value="Save Signature" class="btn btn-success" />
+        
+        <input type="hidden" id="bolConnection" value="false" />        
+
+        <a href="~/Voter/Index" class="btn btn-danger">Cancel</a>
+
+        <a href="~/Signature?barCode=@Model.BarCode" class="btn btn-danger">Clear</a>
+        <br /><br />
+
+        <div class="col-md-6" style="font-size:1.2em;">
+            Voter Sign in Page for:
+        </div>
+
+        <hr style="margin:3px 0 12px 0; padding:0 0 0 0; clear:both;" />
+        
+        <div class="col-md-6">
+            @Html.DisplayFor(model => model.FirstName)
+            @Html.DisplayFor(model => model.MiddleName)
+            @Html.DisplayFor(model => model.LastName)
+            @Html.DisplayFor(model => model.Generation)
+        </div>
+        <div class="col-md-4">
+            DOB @ViewBag.BirthDateString
+        </div>
+        <div style="clear:both;"></div>
+
+        <div style="height:100px;">&nbsp;</div>
+
+        <div class="row">
+            <div class="col-md-6 col-centered" style="margin: 0 auto;">
+                <div style="font-size:0.8em;">
+                    <i>Voter Sign Here</i>
+                </div>
+                <div id='ctlSignature_Container' style='width: 650px; height: 200px; margin: 10px; position: relative;'>
+                    @*<script language="javascript" type="text/javascript">
+                    var ieVer = getInternetExplorerVersion();
+                    if (isIE) {
+                        if (ieVer >= 9.0)
+                            isIE = false;
+                    }
+
+                    if (isIE) {
+                        document.write("<div ID='ctlSignature' style='width:450px;height:300px;'></div>");
+                    }
+                    else {
+                        document.write("<canvas id='ctlSignature' width='450' height='300' style='left: 0px; top: 0px; position: absolute;'></canvas>");
+                    }
+                    </script>*@
+
+                    <canvas id='ctlSignature' width='650' height='200' style='left: 0px; top: 0px; position: absolute;'></canvas>
+                </div>
+                <div id='ctlSignature_toolbar' style='display: block; left: 10px; height: 20px; width: 650px;
+    position: relative; background-color: transparent;'>
+                    <input type="button" id='ctlSignature_resetbutton' value="Reset" style='cursor: pointer;
+        float: right; display:none;' /><div id='ctlSignature_status' style='color: blue; font-family: verdana;
+            font-size: 12px; float: right; margin-right: 5px; display:none;'>
+                    </div>
+                </div>
+                @Html.HiddenFor(m => m.BarCode)
+                <input type='hidden' id='ctlSignature_data' name='ctlSignature_data' value='' />
+                <input type='hidden' id='ctlSignature_data_smooth' name='ctlSignature_data_smooth' value='' />
+                @section scripts{
+                    <script type="text/javascript">
+                        var result = null;
+                        var objctlSignature;
+
+                        $(document).ready(function () {
+                            // Create Signature object and set parameters
+                            objctlSignature = new SuperSignature({
+                                SignObject: "ctlSignature",
+                                SignWidth: "650",
+                                SignHeight: "200",
+                                ImageScaleFactor: "1",
+                                Enabled: "true",
+                                SmoothSign: true,
+                                TransparentSign: false,
+                                BackColor: "#DFE5ED",
+                                Visible: "true",
+                                RequiredPoints: 50,
+                                SignStatusBar: false,
+                                SignRequired: true,
+                                SuccessMessage: "Signature OK.",
+                                StartMessage: "Please sign.",
+                                ErrorMessage: "Please continue your signature.",
+                                SignShowImageBorder: true,
+                                BorderColor: "#DCDCDC",
+                                BorderStyle: "solid",
+                                BorderWidth: "2px",
+                                PenColor: "#000000",
+                                PenSize: 2,
+                                jQueryEvent: false,
+                                forceMouseEvent: true
+                            });
+
+                            // Initialize the Signature Object
+                            try { objctlSignature.Init(); } catch (ex) { alert(ex.description); }
+
+                        });
+
+                        // PenCursor : "pen.cur"  // choose path relative to ss.js and provide your file                                           
+
+                    </script>
+                }
+            </div>
+        </div>
+        <div style="clear:both;"></div>
+</form>

@@ -1,0 +1,35 @@
+﻿@model IEnumerable<EVote.DataModels.NavigationMenuModel>
+
+<ul class="nav navbar-nav">
+
+    @foreach (var item in Model)
+    {
+        <li style="margin:0 0 0 -10px;">@Html.ActionLink(item.Name, item.Action, item.Controler)</li>
+    }
+
+    @* Admins, Devs and SuperUsers can view these links*@
+    @if (Convert.ToInt32(Session["RoleID"]) > 1 && Convert.ToInt32(Session["RoleID"]) == 3)
+    {
+        <li class="dropdown" style="margin:0 0 0 -15px;">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Manage</a>
+            <ul class="dropdown-menu">
+                @* Admins and Devs can view these links*@
+                @if (Convert.ToInt32(Session["RoleID"]) == 3)
+                {
+                    <li>@Html.ActionLink("Edit Voter", "Index", "Manage")</li>
+                    <li>@Html.ActionLink("Add Voter", "Add", "Manage")</li>
+                    <li><hr style="margin-bottom:0;" /></li>
+                    <li>@Html.ActionLink("Configure", "Configure", "Setup")</li>
+                    @*<li>@Html.ActionLink("Districts", "Districts", "Manage")</li>*@
+                    <li>@Html.ActionLink("Setup", "Setup", "Setup")</li>
+
+                    if (Session["DistrictOnly"].ToString() == "True")
+                    { 
+                        <li>@Html.ActionLink("Site District", "SiteDistricts", "Setup")</li>
+                    }
+                }
+            </ul>
+        </li>
+    }    
+
+</ul>

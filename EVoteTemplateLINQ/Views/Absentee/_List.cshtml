@@ -1,0 +1,100 @@
+﻿@model IEnumerable<EVote.DataModels.VoterDataModel>
+
+
+@if (ViewBag.EmptyList >= 1)
+{
+    <br /><br />
+    <p>@ViewBag.EmptyList Voters Found</p>
+
+<table class="table">
+@foreach (var item in Model)
+{
+    <tr>
+        <td style="width:100px;">            
+            @Html.ActionLink("Select", "Edit", "Absentee", new { barCode = item.BarCode }, new { @class = "btn btn-default" })                
+        </td>
+        <td style="padding-right:5px; width:100px; text-align:right;">
+            <span style="color:grey;">Name </span>
+        </td>
+        <td style="padding-left:0px; width:200px;">            
+            <strong>@Html.DisplayFor(modelItem => item.LastName)</strong>
+            <br />
+            @Html.DisplayFor(modelItem => item.FirstName)
+            @Html.DisplayFor(modelItem => item.MiddleName)
+            @Html.DisplayFor(modelItem => item.Generation)
+        </td>
+        <td style="padding-right:5px; width:150px; text-align:right;">
+            <span style="color:grey;">Address </span>
+        </td>
+        <td  style="padding-left:0px;">
+            @Html.DisplayFor(modelItem => item.Address1)
+            @Html.DisplayFor(modelItem => item.Address2)
+            <br />
+            @Html.DisplayFor(modelItem => item.City)
+            @Html.DisplayFor(modelItem => item.State)
+            @Html.DisplayFor(modelItem => item.Zip)
+        </td>
+        <td style="padding-right:5px; width:120px; text-align:right;">
+            <span style="color:grey;">Birthdate </span>
+        </td>
+        <td  style="padding-left:0px;">
+            @item.DOB.ToString().Substring(0, item.DOB.ToString().IndexOf(" ") + 1)
+        </td>
+    </tr>
+
+    <tr>
+        <td style="border-top: 0px none white; padding-top:0px;">
+            @Html.HiddenFor(modelItem => item.DOBSearch)
+            @Html.HiddenFor(modelItem => item.LogCode)
+        </td>        
+        <td style="border-top: 0px none white; padding-top:0px;  padding-right:5px; width:50px; text-align:right;">
+            <span style="color:grey;">Roll No </span>
+        </td>
+        <td style="border-top: 0px none white; padding-top:0px; padding-left:0px;">            
+            @Html.DisplayFor(modelItem => item.VoterID)
+        </td>
+        <td style="border-top: 0px none white; padding-top:0px;  padding-right:5px; width:150px; text-align:right;">
+            <span style="color:grey;">Voting Status </span>
+        @if (item.LogCode == 12)
+        {
+            <br />
+            <span style="color:grey;">Where Voted </span>
+            <br />
+            <span style="color:grey;">Time </span>
+        }
+        </td>
+        <td style="border-top: 0px none white; padding-top:0px; padding-left:0px;">            
+            @Html.DisplayFor(modelItem => item.LogDescription)
+        @if (item.LogCode == 12)
+        {
+            <br />
+            @Html.DisplayFor(modelItem => item.UserName)
+            <br />
+            @Html.DisplayFor(modelItem => item.LogDate)
+        }
+        </td>
+        @if (Session["ShowDistrict"].ToString() == "True")
+        {
+        <td style="border-top: 0px none white; padding-top:0px; padding-right:5px; width:50px; text-align:right;">
+            <span style="color:grey;">District </span>
+        </td>
+        <td style="border-top: 0px none white; padding-top:0px; padding-left:0px;">
+            @Html.DisplayFor(modelItem => item.DistrictName)
+        </td>
+        }
+        else
+        {
+            <td style="border-top: 0px none white;">&nbsp;</td>
+            <td style="border-top: 0px none white;">&nbsp;</td>
+        }
+    </tr>
+}
+
+</table>
+}
+else
+{
+    <div class="col-sm-4 pull-right">
+        <p style="font-size:1.5em; color:red; font-weight:600;">No Voters Found</p>
+    </div>
+}

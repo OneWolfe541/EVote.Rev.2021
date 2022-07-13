@@ -1,0 +1,44 @@
+﻿@model IEnumerable<SelectListItem>
+
+<style>
+    ::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
+</style>
+
+<table id="year_table" align="center">
+    <tr>
+        @{ var i = 1; }
+        @if (Model != null)
+        {
+
+            foreach (var item in Model)
+            {
+                if (item.Selected == true)
+                {
+                    <td style="width:175px; height:50px;">
+                        <a href="#" class="btn btn-primary year" id="year_@Int32.Parse(item.Value)" onclick="SelectYear(@item.Value)" value="@item.Value" style="font-size:36px; width:175px;">
+                            @Html.DisplayFor(modelItem => item.Text)
+                        </a>
+                    </td>
+                }
+                else
+                {
+                    <td style="width:175px; height:50px;">
+                        <a href="#" class="btn btn-default year" id="year_@Int32.Parse(item.Value)" onclick="SelectYear(@item.Value)" value="@item.Value" style="font-size:36px; width:175px;">
+                            @Html.DisplayFor(modelItem => item.Text)
+                        </a>
+                    </td>
+                }
+
+                if (i == 5)
+                {
+                @:</tr><tr>
+                    i = 0;
+                }
+                i++;
+            }
+        }
+    </tr>
+</table>

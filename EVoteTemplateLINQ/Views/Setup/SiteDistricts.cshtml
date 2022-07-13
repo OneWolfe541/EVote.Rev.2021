@@ -1,0 +1,227 @@
+﻿@model IEnumerable<EVote.Context.tblUserDistricts>
+
+@{
+    ViewBag.Title = "Configuration";
+}
+
+<br />
+
+<h2>Site District Configurations</h2>
+
+<br />
+
+<div class="row">
+    @*@ViewBag.ErrorMessage*@
+    <table class="table">
+        <tr>
+            <th style="border:0 none white; width:300px;">
+                Site
+            </th>
+            <th style="border:0 none white;">
+                District
+            </th>
+            <th style="border:0 none white; width:100px;">
+            </th>
+            <th style="border:0 none white;">
+            </th>
+        </tr>
+
+        <tr>
+            <td>
+                <div style="margin:0px 0px 10px 0px;">
+                    @Html.DropDownList("Site", new SelectList(ViewBag.SiteList, "UserId", "UserName"), null, new { @class = "form-control", @id = "Site_Add" })
+                </div>
+            </td>
+            <td>
+                <div style="margin:0px 0px 10px 0px;">
+                    @Html.DropDownList("District", new SelectList(ViewBag.DistrictList, "District", "DistrictName"), null, new { @class = "form-control", @id = "District_Add" })
+                </div>
+            </td>
+            <td>
+                <div style="margin:0px 0px 10px 0px;">
+                    <a class="btn btn-primary" id="@("lnkAdd")" onclick="AddUserDistrict()">Add</a>
+                </div>
+            </td>
+            <td >
+            </td>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @*@Html.DisplayFor(modelItem => item.UserId)*@
+                @Html.DropDownListFor(modelItem => item.UserId, new SelectList(ViewBag.SiteList, "UserId", "UserName", item.UserId), null, new { @class = "form-control", @id = "Site_" + item.Id.ToString() })
+                @Html.HiddenFor(modelItem => item.UserId)
+                @Html.ValidationMessageFor(modelItem => item.UserId, "", new { @class = "text-danger" })
+            </td>
+            <td>
+                @*@Html.DisplayFor(modelItem => item.District)*@
+                @* https://stackoverflow.com/questions/41679553/mvc-dropdownlistfor-not-selecting-a-value *@
+                @*@Html.DropDownListFor(m => m.Status, new SelectList(ViewBag.DestinationStatusList, "Value", "Text", Model.Status), new { @id = "DestinationStatusDropDown", @class = "dropListSmall" })*@
+                @Html.DropDownListFor(modelItem => item.DistrictId, new SelectList(ViewBag.DistrictList, "District", "DistrictName", item.DistrictId), null, new { @class = "form-control", @id = "District_" + item.Id.ToString() })
+                @Html.HiddenFor(modelItem => item.DistrictId)
+                @Html.ValidationMessageFor(modelItem => item.DistrictId, "", new { @class = "text-danger" })
+            </td>
+            <td>
+                <a class="btn btn-success" id="@("lnkSave"+item.Id)" onclick="SaveUserDistrict(@item.Id)">Save</a>
+            </td>
+            <td>
+                <a class="btn btn-danger" id="@("lnkSave"+item.Id)" onclick="DeleteUserDistrict(@item.Id)">Delete</a>
+            </td>
+        </tr>
+        }
+
+
+    </table>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        // Grab Config setting when Save button is pressed
+        var CallSaveSetting = function (id) {
+            var textBoxId = 'item_ConfigValue_' + id;
+            var linkID = 'lnkSave' + id
+            $('#'+linkID).attr('href', $('#'+linkID).attr('href') + '&ConfigValue=' + $('#' + textBoxId).val() + "&UserId=" + $("#SiteUser").val());
+        };
+
+        // Change page when drop down list is changed
+        var SelectSite = function () {
+            console.log($("#SiteUser").val());
+            window.location.replace("../Setup/Setup?UserName=" + $("#SiteUser").val());
+        };
+
+        var UpdateSite = function () {
+            console.log($("#SiteUser").val());
+            window.location.replace("../Manage/UpdateSite?UserId=" + $("#SiteUser").val());
+        };
+
+        var AddUserDistrict = function () {
+            var site = $("#Site_Add").val();
+            var district = $("#District_Add").val()
+
+            console.log(site);
+            console.log(district);
+
+            $.ajax({
+                type: "POST",
+                url: "../Setup/AddSiteDistrict",
+                data: {                    
+                    Site: site,
+                    District: district
+                },
+                success: function () {
+                    location.reload(true);
+                }
+            });
+        }
+
+        var SaveUserDistrict = function (id) {
+            var site = $("#Site_" + id).val();
+            var district = $("#District_" + id).val()
+
+            console.log(site);
+            console.log(district);
+
+            $.ajax({
+                type: "POST",
+                url: "../Setup/SaveSiteDistrict",
+                data: {
+                    Id: id,
+                    Site: site,
+                    District: district
+                },
+                success: function (response) {
+                    console.log(response);
+                    if (response == "True") {
+                        
+                    }
+                }
+            });
+        }
+
+        var DeleteUserDistrict = function (id) {
+            var site = $("#Site_" + id).val();
+            var district = $("#District_" + id).val()
+
+            console.log(site);
+            console.log(district);
+
+            $.ajax({
+                type: "POST",
+                url: "../Setup/DeleteSiteDistrict",
+                data: {
+                    Id: id
+                },
+                success: function (response) {
+                    location.reload(true);
+                }
+            });
+        }
+        
+        $(function () {
+
+            // Load Election Details partial view
+            $('#divElectionDetails').load("../Setup/GetElectionDetails",function () {
+                $("#divElectionDetails").show();
+
+                // Bind keydown handler after partial view is loaded
+                // Run save function when 'Enter' is pressed
+                $('input').keydown(function (e) {
+                    if (e.keyCode == 13) {
+                        var id = $(this).attr('data');
+                        var textBoxId = 'item_ConfigValue_' + id;
+                        var linkID = 'lnkSave' + id
+                        var saveURL = $('#' + linkID).attr('href') + '&ConfigValue=' + $('#' + textBoxId).val() + "&UserId=" + $("#SiteUser").val();
+                        console.log(saveURL);
+                        window.location.replace(saveURL);
+                    }
+                });
+            });
+
+            // Bind keydown handler when page is loaded
+            // The textboxes in the partial view are not getting set so I need to run this after the partial view is loaded
+            // Run save function when 'Enter' is pressed
+            //$('input').keydown(function (e) {
+            //    if (e.keyCode == 13) {
+            //        var id = $(this).attr('data');
+            //        var textBoxId = 'item_ConfigValue_' + id;
+            //        var linkID = 'lnkSave' + id
+            //        var saveURL = $('#' + linkID).attr('href') + '&ConfigValue=' + $('#' + textBoxId).val() + "&UserId=" + $("#SiteUser").val();
+            //        //console.log(saveURL);
+            //        window.location.replace(saveURL);
+            //    }
+            //});
+
+            $('input[type=checkbox]').on('click', function () {
+                console.log($(this).attr('data'));
+                var id = $(this).attr('data');
+                //item_HiddenValue_
+                var textBoxId = 'item_ConfigValue_' + id;
+                if ($(this).is(':checked')) {                    
+                    $('#' + textBoxId).val('True');
+                    var linkID = 'lnkSave' + id
+                    var saveURL = $('#' + linkID).attr('href') + '&ConfigValue=' + $('#' + textBoxId).val() + "&UserId=" + $("#SiteUser").val();                    
+                    window.location.replace(saveURL);
+                }
+                else
+                {
+                    $('#' + textBoxId).val('False');
+                    var linkID = 'lnkSave' + id
+                    var saveURL = $('#' + linkID).attr('href') + '&ConfigValue=' + $('#' + textBoxId).val() + "&UserId=" + $("#SiteUser").val();                    
+                    window.location.replace(saveURL);
+                }
+            });
+
+            $('input[type=checkbox]').each(function () {                
+                var textBoxId = 'item_ConfigValue_' + $(this).attr('data');
+                //console.log($('#' + textBoxId).val());
+                if($('#' + textBoxId).val() == 'True')
+                {
+                    $(this).prop('checked', true);
+                }
+            });
+
+        });
+    </script>
+}

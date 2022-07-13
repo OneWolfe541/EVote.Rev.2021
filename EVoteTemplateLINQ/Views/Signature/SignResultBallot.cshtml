@@ -1,0 +1,69 @@
+﻿@model EVote.DataModels.VoterDataModel
+
+<br /><br />
+
+<div class="col-md-3" style="font-size:1.2em;">
+    Verify Signature for:
+</div>
+
+<hr style="margin:3px 0 12px 0; padding:0 0 0 0; clear:both;" />
+
+<div class="col-md-8">
+    @Html.DisplayFor(model => model.FirstName)
+    @Html.DisplayFor(model => model.MiddleName)
+    @Html.DisplayFor(model => model.LastName)
+    @Html.DisplayFor(model => model.Generation)
+</div>
+
+<div class="container">&nbsp;</div>
+<br />
+    <div class="container">
+        <div class="col-md-6">
+            Ballot Number
+            <input id="BallotNumber" type="text" class="form-control" />
+            <br />
+            <div style="color:red; font-size:0.8em;">
+                <i>Voter's Signature</i>
+            </div>
+            <img src="@ViewBag.SignFileURL" />
+        </div>
+    </div>
+
+    <br />
+    <div class="container">
+        @Html.ActionLink("Signature Ok", "SignInFinish", "Signature", new { barCode = ViewBag.BarCode }, new { @class = "btn btn-success", @id = "btnSave", @onClick = "CheckBallotNumber()" })
+        @Html.ActionLink("Cancel/Re-Sign", "Index", "Signature", new { barCode = ViewBag.BarCode }, new { @class = "btn btn-danger" })
+    </div>
+
+@section scripts{
+    <script type="text/javascript">
+        var CheckBallotNumber = function () {
+            var balNo = $('#BallotNumber').val();
+            // Check for valid ballot number
+            if (Math.floor(balNo) == balNo && $.isNumeric(balNo))
+            {
+                if ($('#tempSave').length > 0) {
+                    // Retrieve stored address
+                    $('#btnSave').attr('href', $('#tempSave').attr('href') + '&BallotNumber=' + balNo);
+                }
+                else {
+                    $('#btnSave').attr('href', $('#btnSave').attr('href') + '&BallotNumber=' + balNo);
+                }
+                console.log($('#btnSave').attr('href'));
+            }
+            else
+            {
+                // Store btnSave address
+                $('<input>').attr({
+                    type: 'hidden',
+                    id: 'tempSave',
+                    name: 'tempSave'
+                }).appendTo('form');
+                $('#tempSave').attr('href', $('#btnSave').attr('href'));
+
+                $('#btnSave').attr('href', "#");
+                alert("Please Enter a Valid Ballot Number");
+            }
+        };
+    </script>
+}

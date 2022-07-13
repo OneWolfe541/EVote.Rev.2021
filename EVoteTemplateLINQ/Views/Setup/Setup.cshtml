@@ -1,0 +1,181 @@
+﻿@model IEnumerable<EVote.Context.tblWebConfig>
+
+@{
+    ViewBag.Title = "Configuration";
+}
+
+<br />
+
+<h2>Setup Configurations</h2>
+<div class="row">
+    <div class="col-sm-5">
+        <div id="divElectionDetails"></div>
+    </div>
+
+    <div class="col-sm-2">
+
+    </div>
+
+    <div class="col-sm-5" style="visibility:hidden;">
+        <h3>Lists</h3>
+
+        @*<div class="row">
+            @Html.ActionLink("Edit Spoiled Reasons List", "SpoiledReasons", "Manage", null, new { @class = "btn btn-default" })
+        </div>*@
+
+        <br />
+
+        <div class="row">
+            Select Site
+            @Html.DropDownList("SiteUser", (IEnumerable<SelectListItem>)ViewBag.UserList, "All", new { @class = "form-control", onchange = "SelectSite()" })
+            @if (ViewBag.SelectedUser > 0)
+            {
+                <a class="btn btn-primary" id="lnkUpdateSite" onclick="UpdateSite()" title="Reset all Settings for the selected Site">Update Site</a>
+            }
+        </div>
+    </div>
+</div>
+
+<br />
+
+<div class="row">
+    @*@ViewBag.ErrorMessage*@
+    <table class="table">
+        <tr>
+            <th style="border:0 none white; width:300px;">
+                Setting Name
+            </th>
+            <th style="border:0 none white; width:300px;">
+                Value
+            </th>
+            <th style="border:0 none white;">
+                Description
+            </th>
+            <th style="border:0 none white;"></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>                    
+                    @if (item.ConfigValue == "True" || item.ConfigValue == "False")
+                    {
+                        @Html.EditorFor(modelItem => item.ConfigValue, new { htmlAttributes = new { id = string.Format("item_ConfigValue_{0}", item.WebConfigID), data=item.WebConfigID, style="visibility:hidden;" } })
+                        <div class="checkbox" style="float:left; margin-left:25px; margin-right:10px;">                            
+                            <label><input type="checkbox" value="" data="@item.WebConfigID" id="@("chkSetting"+item.WebConfigID)" /></label>
+                        </div>                        
+                    }
+                    else
+                    {
+                        @Html.EditorFor(modelItem => item.ConfigValue, new { htmlAttributes = new { id = string.Format("item_ConfigValue_{0}", item.WebConfigID), data = item.WebConfigID, @class="form-control", style = "width:150px;" } })
+                    }
+                    
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Details)
+                </td>
+                <td>
+                    @if (item.ConfigValue == "True" || item.ConfigValue == "False")
+                    {
+                        <a class="btn btn-success" href="@Url.Action("SaveSetting", new { source = "Setup", WebConfigID = item.WebConfigID, ConfigSetting = item.ConfigSetting })" id="@("lnkSave"+item.WebConfigID)" onclick="CallSaveSetting(@item.WebConfigID)" style="visibility:hidden;">Save</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-success" href="@Url.Action("SaveSetting", new { source = "Setup", WebConfigID = item.WebConfigID, ConfigSetting = item.ConfigSetting })" id="@("lnkSave"+item.WebConfigID)" onclick="CallSaveSetting(@item.WebConfigID)">Save</a>
+                    }                    
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        // Grab Config setting when Save button is pressed
+        var CallSaveSetting = function (id) {
+            var textBoxId = 'item_ConfigValue_' + id;
+            var linkID = 'lnkSave' + id
+            $('#'+linkID).attr('href', $('#'+linkID).attr('href') + '&ConfigValue=' + $('#' + textBoxId).val() + "&UserId=" + $("#SiteUser").val());
+        };
+
+        // Change page when drop down list is changed
+        var SelectSite = function () {
+            console.log($("#SiteUser").val());
+            window.location.replace("../Setup/Setup?UserName=" + $("#SiteUser").val());
+        };
+
+        var UpdateSite = function () {
+            console.log($("#SiteUser").val());
+            window.location.replace("../Manage/UpdateSite?UserId=" + $("#SiteUser").val());
+        };
+        
+        $(function () {
+
+            // Load Election Details partial view
+            $('#divElectionDetails').load("../Setup/GetElectionDetails",function () {
+                $("#divElectionDetails").show();
+
+                // Bind keydown handler after partial view is loaded
+                // Run save function when 'Enter' is pressed
+                $('input').keydown(function (e) {
+                    if (e.keyCode == 13) {
+                        var id = $(this).attr('data');
+                        var textBoxId = 'item_ConfigValue_' + id;
+                        var linkID = 'lnkSave' + id
+                        var saveURL = $('#' + linkID).attr('href') + '&ConfigValue=' + $('#' + textBoxId).val() + "&UserId=" + $("#SiteUser").val();
+                        console.log(saveURL);
+                        window.location.replace(saveURL);
+                    }
+                });
+            });
+
+            // Bind keydown handler when page is loaded
+            // The textboxes in the partial view are not getting set so I need to run this after the partial view is loaded
+            // Run save function when 'Enter' is pressed
+            //$('input').keydown(function (e) {
+            //    if (e.keyCode == 13) {
+            //        var id = $(this).attr('data');
+            //        var textBoxId = 'item_ConfigValue_' + id;
+            //        var linkID = 'lnkSave' + id
+            //        var saveURL = $('#' + linkID).attr('href') + '&ConfigValue=' + $('#' + textBoxId).val() + "&UserId=" + $("#SiteUser").val();
+            //        //console.log(saveURL);
+            //        window.location.replace(saveURL);
+            //    }
+            //});
+
+            $('input[type=checkbox]').on('click', function () {
+                console.log($(this).attr('data'));
+                var id = $(this).attr('data');
+                //item_HiddenValue_
+                var textBoxId = 'item_ConfigValue_' + id;
+                if ($(this).is(':checked')) {                    
+                    $('#' + textBoxId).val('True');
+                    var linkID = 'lnkSave' + id
+                    var saveURL = $('#' + linkID).attr('href') + '&ConfigValue=' + $('#' + textBoxId).val() + "&UserId=" + $("#SiteUser").val();                    
+                    window.location.replace(saveURL);
+                }
+                else
+                {
+                    $('#' + textBoxId).val('False');
+                    var linkID = 'lnkSave' + id
+                    var saveURL = $('#' + linkID).attr('href') + '&ConfigValue=' + $('#' + textBoxId).val() + "&UserId=" + $("#SiteUser").val();                    
+                    window.location.replace(saveURL);
+                }
+            });
+
+            $('input[type=checkbox]').each(function () {                
+                var textBoxId = 'item_ConfigValue_' + $(this).attr('data');
+                //console.log($('#' + textBoxId).val());
+                if($('#' + textBoxId).val() == 'True')
+                {
+                    $(this).prop('checked', true);
+                }
+            });
+
+        });
+    </script>
+}

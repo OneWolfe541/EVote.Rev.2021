@@ -1,0 +1,35 @@
+﻿@model IEnumerable<SelectListItem>
+
+Select a day
+
+<table align="center">
+    <tr>
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                if (item.Selected == true)
+                {
+                    <td style="width:100px; height:70px;">
+                        <a href="#" class="btn btn-primary day" id="day_@Int32.Parse(item.Value)" onclick="SelectDayOfTheMonth(@item.Value)" value="@item.Value" style="font-size:36px; width:100px;">
+                            @Html.DisplayFor(modelItem => item.Value)
+                        </a>
+                    </td>
+                }
+                else
+                {
+                    <td style="width:100px; height:70px;">
+                        <a href="#" class="btn btn-default day" id="day_@Int32.Parse(item.Value)" onclick="SelectDayOfTheMonth(@item.Value)" value="@item.Value" style="font-size:36px; width:100px;">
+                            @Html.DisplayFor(modelItem => item.Value)
+                        </a>
+                    </td>
+                }
+
+                if (Int32.Parse(item.Value) % 7 == 0)
+                {
+                @:</tr><tr>
+                }
+            }
+        }
+    </tr>
+</table>

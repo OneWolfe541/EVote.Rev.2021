@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "Voter Counts";
+}
+
+<br /><br />
+
+<h2>Voter Counts</h2>
+
+Total Voters: @ViewBag.TotalCounts<br />
+Active Voters: @ViewBag.ActiveCounts
+<span style="color:red;">[@ViewBag.Percent%]</span>
+<br />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <img src="@Url.Action("CreateEVChart")" alt="Voter Counts Chart" />
+        </div>
+
+        <div class="col-md-2">
+
+        </div>
+
+        <div class="col-md-5">
+            <img src="@Url.Action("ElectionActivityChart")" alt="Voter Counts Chart" />
+        </div>
+    </div>
+</div>
+

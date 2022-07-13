@@ -1,0 +1,35 @@
+﻿@model IEnumerable<SelectListItem>
+
+Select a month
+
+<table align="center">
+    <tr>
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                if (item.Selected == true)
+                {
+                    <td style="width:250px; height:70px;">
+                        <a href="#" class="btn btn-primary month" id="month_@Int32.Parse(item.Value)" onclick="SelectMonth(@item.Value)" value="@item.Value" style="font-size:36px; width:250px;">
+                            @Html.DisplayFor(modelItem => item.Text)
+                        </a>
+                    </td>
+                }
+                else
+                {
+                    <td style="width:250px; height:70px;">
+                        <a href="#" class="btn btn-default month" id="month_@Int32.Parse(item.Value)" onclick="SelectMonth(@item.Value)" value="@item.Value" style="font-size:36px; width:250px;">
+                            @Html.DisplayFor(modelItem => item.Text)
+                        </a>
+                    </td>
+                }
+
+                if (Int32.Parse(item.Value) % 3 == 0)
+                {
+                @:</tr><tr>
+                }
+            }
+        }
+    </tr>
+</table>

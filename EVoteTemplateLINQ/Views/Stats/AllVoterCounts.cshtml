@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "AllVoterCounts";
+}
+
+<br /><br />
+
+<h2>All Election Counts</h2>
+
+Total Voters: @ViewBag.TotalCounts<br />
+Active Voters: @ViewBag.ActiveCounts
+<span style="color:red;">[@ViewBag.Percent%]</span>
+<br />
+
+<div class="col-md-6">
+    <img src="@Url.Action("ElectionActivity")" alt="Election Activity" />
+</div>
+
+<div class="col-md-6">
+    <img src="@Url.Action("ActivityByDistrict")" alt="Election Activity" />
+</div>
+

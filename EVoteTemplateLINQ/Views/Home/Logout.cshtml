@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "Logout";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+}
+
+<br />
+<div style="margin-bottom:0; margin-left:10px; padding:0 0 0 0; font-size:1.2em;">
+    Sign Out
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-7">
+        <img src="~/Images/pollbook_signout.png" style="border:1px solid lightgray;" />
+    </div>
+    <div class="col-sm-4">
+        @Html.ActionLink("Log in", "Login", "Home")
+    </div>
+</div>
+<br />
+

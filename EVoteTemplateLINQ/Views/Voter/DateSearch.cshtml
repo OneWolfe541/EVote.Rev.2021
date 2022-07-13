@@ -1,0 +1,451 @@
+﻿
+@{
+    ViewBag.Title = "Voter Lookup";
+}
+
+<style>
+    a.date-link {
+        color: #000000
+    }
+
+        a.date-link:active {
+            color: #000000
+        }
+
+        a.date-link:link {
+            color: #000000
+        }
+
+        a.date-link:visited {
+            color: #000000
+        }
+
+    .btn.active.focus, .btn.active:focus, .btn.focus, .btn.focus:active, .btn:active:focus, .btn:focus {
+        outline: thin none;
+        outline-offset: 0px;
+        background-image: none;
+        outline: 0;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
+    .right {
+        position: relative; /* you'll need some position here for jQuery's position to work, otherwise it will be based on the document */
+        width: 50%;
+        height: 200px;
+        overflow: scroll;
+        float: right;
+        display: block;
+    }
+
+        .right span {
+            background-color: red;
+        }
+
+    .yearscroll {
+        position: relative;
+        width: 100%;
+        height: 284px;
+        max-height: 284px;
+        overflow: scroll;
+        margin: auto;
+    }
+</style>
+
+<div class="row" style="text-align:left; vertical-align:middle;">
+    <h3 style="color:grey; text-shadow: 1px 1px lightgrey; margin:10px 0 0 20px;">Voter Lookup</h3>
+</div>
+<div class="col-sm-12" style="margin-left:-20px; margin-top:10px; display:none;">
+    <table class="form-group" style="width:100%; font-size:24px;">
+        <tr>
+            <td style="text-align:right; padding-right:10px;"></td>
+            <td colspan="3" style="text-align:center;">Birth Date</td>
+        </tr>
+        <tr>
+            <td style="text-align:right; padding-right:10px;"> </td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td style="text-align:right; padding-right:10px;"> </td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td style="text-align:right; padding-right:10px;"> </td>
+            <td colspan="3">
+                <table style="margin:auto;">
+                    @if (Session["DatePicker"].ToString() == "True")
+                    {
+                        <tr>
+                            <td style="align-content:center;">
+                                <input type="date" data-clear-btn="true" name="date-2" id="datepicker" value="">
+                            </td>
+                            <td style="padding-left:12px;">
+                                <a href="#" class="btn btn-success" onclick="ShowListLoadDatePicker()" style="font-size:24px; width:150px;">Go</a>
+                            </td>
+                            <td style="padding-left:12px;">
+                                <a href="#" class="btn btn-danger" onclick="ClearList()" style="font-size:24px;">Reset</a>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>&nbsp;Month</td>
+                            <td>@Html.DropDownList("MonthList", (IEnumerable<SelectListItem>)ViewBag.BirthMonthList, new { @class = "form-control", @style = "width:175px; font-size:24px; height:46px;" })</td>
+                            <td>&nbsp;Day</td>
+                            <td>@Html.DropDownList("DayList", (IEnumerable<SelectListItem>)ViewBag.BirthDayList, new { @class = "form-control", @style = "width:175px; font-size:24px; height:46px;" })</td>
+                            <td>&nbsp;Year</td>
+                            <td>@Html.DropDownList("YearList", (IEnumerable<SelectListItem>)ViewBag.BirthYearList, new { @class = "form-control", @style = "width:175px; font-size:24px; height:46px;" })</td>
+                            <td style="padding-left:12px;">
+                                <a href="#" class="btn btn-success" onclick="ShowListLoadDate()" style="font-size:24px; width:150px;">Go</a>
+                            </td>
+                            <td style="padding-left:12px;">
+                                <a href="#" class="btn btn-danger" onclick="ClearList()" style="font-size:24px;">Reset</a>
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td></td>
+                        <td colspan="4" style="font-size:20px;">
+                            @Html.ActionLink("Use Name Search", "Index", "Voter", new { id = "fullname" }, null)
+                        </td>
+                    </tr>
+                    <tr></tr>
+                </table>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<div class="row" style="text-align:center; vertical-align:middle; font-size:32px;">
+    <div class="col-md-4" style="text-align:right; vertical-align:middle; font-size:24px; margin:15px 0 0 0;">
+        Birth Date
+    </div>
+
+    <div class="col-md-4">
+        <a href="#" id="month_value" onclick="EditMonth()" class="btn shadow-none date-link" style="font-size:32px; width:55px; text-decoration:none; margin:0 0 0 0; text-align:right; padding-left:0px; padding-right:0px;">MM</a>
+        <a href="#" class="btn shadow-none date-link" style="font-size:32px; margin:0 0 0 0; padding-left:0px; padding-right:0px;">/</a>
+        <a href="#" id="day_value" onclick="EditDay()" class="btn shadow-none date-link" style="font-size:32px; width:55px; text-decoration:none; margin:0 0 0 0; text-align:center; padding-left:0px; padding-right:0px;">DD</a>
+        <a href="#" class="btn shadow-none date-link" style="font-size:32px; margin:0 0 0 0; padding-left:0px; padding-right:0px;">/</a>
+        <a href="#" id="year_value" onclick="EditYear()" class="btn shadow-none date-link" style="font-size:32px; width:90px; text-decoration:none; margin:0 0 0 0; text-align:left; padding-left:0px; padding-right:0px;">YYYY</a>
+        &nbsp;
+    </div>
+
+    <div class="col-md-4" style="text-align:left;">
+        <a href="#" class="btn btn-success" onclick="LoadVotersFromDate()" style="font-size:18px; width:100px;">Go</a>
+        <a href="#" class="btn btn-danger" onclick="ClearDateList()" style="font-size:18px;">Reset</a>
+    </div>
+
+</div>
+
+<div class="row" style="text-align:center; vertical-align:middle; font-size:20px;">
+    @Html.ActionLink("Use Name Search", "Index", "Voter", new { id = "fullname" }, null)
+</div>
+
+
+<hr id="date-separator" />
+
+<div class="container" id="month-selector" style="clear:both; text-align:center; align-content:center; font-size:20px;">
+    @Html.Action("MonthsOfTheYear", "Voter", "0")
+</div>
+
+<div class="container" id="day-selector" style="clear:both; display:none; text-align:center; align-content:center; font-size:20px;">
+    @Html.Action("DaysOfTheMonth", "Voter", "0")
+</div>
+
+<div class="container" id="year-selector" style="clear:both; display:none; text-align:center; align-content:center; font-size:20px;">
+    Select a year
+
+    <div id="year_scroll" class="yearscroll">
+        @Html.Action("BirthYears", "Voter", "0")
+    </div>
+</div>
+
+<div class="container" style="clear:both;">
+    <div id="myListDiv"></div>
+    @*<div id="loadingSpinner" style="text-align:center; display:none;">
+        <div class="large progress" style="background-color:white; box-shadow:none;"><div></div></div>
+    </div>*@
+</div>
+
+<input type="hidden" id="hdnSession" data-value="@Request.RequestContext.HttpContext.Session["UserID"]" />
+
+@section scripts{
+    <script type="text/javascript">
+        var scroll_l = 0,
+            scroll_t = 0;
+
+        $.fn.hasAttr = function (name) {
+            return this.attr(name) !== undefined;
+        };
+
+        // Set up keydown functions when page loads
+        $(function () { initializeDateSearch() });
+
+        // Force entire page to reload when the session expires
+        var CheckSession = function () {
+            var root = applicationRoot();
+            $.ajax({
+                type: "POST",
+                url: root + "/Home/GetUserId",
+                success: function (response) {
+                    console.log("UserId[" + response + "]")
+                    if (!$.isNumeric(response)) {
+                        //alert("Your Session has expired");
+                        var root = applicationRoot();
+                        window.location.replace(root + "/Home/Login");
+                    };
+                }
+            });
+        };
+
+        //$('#year_scroll').scroll(function () {
+        //    console.log("Save Scroll");
+        //    scroll_l = $('#year_scroll').scrollLeft();
+        //    scroll_t = $('#year_scroll').scrollTop();
+        //});
+
+        // Load voter list from datepicker
+        var ShowListLoadDatePicker = function () {
+            CheckSession();
+            var root = applicationRoot();
+            var date = $("#datepicker").val().split("-");
+            console.log(Number(date[1]).toString() + "/" + Number(date[2]).toString() + "/" + Number(date[0]).toString());
+            var url = root + "/Voter/VoterDateSearch" +
+                "?strDate=" + encodeURIComponent(Number(date[1]).toString() + "/" + Number(date[2]).toString() + "/" + Number(date[0]).toString());
+            console.log(url);
+            $("#myListDiv").load(url, function () {
+                $("#myListDiv").show();
+            });
+        };
+
+        $('#datepicker').keypress(function (event) {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode == '13') {
+                ShowListLoadDatePicker();
+            }
+        });
+
+        var EditMonth = function () {
+            CheckSession();
+            $("#myListDiv").hide();
+            $("#date-separator").show();
+
+            console.log("Month clicked");
+
+            if ($('#month_value').hasAttr('value')) {
+                var root = applicationRoot();
+                var url = root + "/Voter/MonthsOfTheYear" +
+                    "?selectedmonth=" + $('#month_value').attr('value').toString();
+                $("#month-selector").load(url, function () {
+                    $("#month-selector").show();
+                });
+            }
+            else {
+                var root = applicationRoot();
+                var url = root + "/Voter/MonthsOfTheYear" +
+                    "?selectedmonth=0"
+                $("#month-selector").load(url, function () {
+                    $("#month-selector").show();
+                });
+            }
+
+            $("#day-selector").hide();
+            $("#year-selector").hide();
+        }
+
+        var EditDay = function () {
+            CheckSession();
+            $("#myListDiv").hide();
+            $("#date-separator").show();
+
+            console.log("Day clicked");
+            $("#month-selector").hide();
+
+            if ($('#year_value').hasAttr('value')) {
+                var root = applicationRoot();
+                var url = root + "/Voter/DaysOfTheMonth" +
+                    "?selectedday=" + $('#day_value').attr('value').toString();
+                $("#day-selector").load(url, function () {
+                    $("#day-selector").show();
+                });
+            }
+            else {
+                var root = applicationRoot();
+                var url = root + "/Voter/DaysOfTheMonth" +
+                    "?selectedday=0";
+                $("#day-selector").load(url, function () {
+                    $("#day-selector").show();
+                });
+            };
+
+            $("#year-selector").hide();
+        }
+
+        var EditYear = function () {
+            CheckSession();
+            $("#myListDiv").hide();
+            $("#date-separator").show();
+
+            console.log("Year clicked");
+            $("#month-selector").hide();
+            $("#day-selector").hide();
+            //$("#year-selector").show();
+
+            //console.log(scroll_t);
+
+            if ($('#year_value').hasAttr('value')) {
+                var root = applicationRoot();
+                var url = root + "/Voter/BirthYears" +
+                    "?selectedyear=" + $('#year_value').attr('value').toString();
+                $("#year_scroll").load(url, function () {
+                    $("#year-selector").show();
+                });
+            }
+            else {
+                var root = applicationRoot();
+                var url = root + "/Voter/BirthYears" +
+                    "?selectedyear=0";
+                $("#year_scroll").load(url, function () {
+                    $("#year-selector").show();
+                });
+            };
+
+            //$('#year_scroll').scrollLeft(scroll_l);
+            //$('#year_scroll').scrollTop(scroll_t);
+
+            var scrollspeed = scroll_t * 1.5 // speed is realative to distance
+            $('.yearscroll').animate({ // animate your right div
+                scrollTop: scroll_t // to the position of the target
+            }, scrollspeed);
+
+            //console.log(scroll_t);
+        }
+
+        var SelectMonth = function (id) {
+            CheckSession();
+            console.log("Month selected: " + $('#month_' + id).attr('value'));
+
+            $('#month_value').html($('#month_' + id).attr('value'));
+            $('#month_value').attr('value', $('#month_' + id).attr('value'));
+            console.log($('#month_value').attr('value'));
+
+            $('.btn-primary.month').addClass('btn-default');
+            $('.btn-primary.month').removeClass('btn-primary');
+
+            $('#month_' + id).removeClass('btn-default');
+            $('#month_' + id).addClass('btn-primary');
+
+            setTimeout(function () {
+                $("#month-selector").hide();
+                $("#day-selector").show();
+            }, 500);
+        };
+
+        var SelectDayOfTheMonth = function (id) {
+            CheckSession();
+            console.log("Day selected: " + $('#day_' + id).attr('value'));
+
+            $('#day_value').html($('#day_' + id).attr('value'));
+            $('#day_value').attr('value', $('#day_' + id).attr('value'));
+            console.log($('#day_value').attr('value'));
+
+            $('.btn-primary.day').addClass('btn-default');
+            $('.btn-primary.day').removeClass('btn-primary');
+
+            $('#day_' + id).removeClass('btn-default');
+            $('#day_' + id).addClass('btn-primary');
+
+            setTimeout(function () {
+                $("#day-selector").hide();
+                $("#year-selector").show();
+            }, 500);
+        };
+
+        var SelectYear = function (id) {
+            CheckSession();
+            console.log("Year selected: " + $('#year_' + id).attr('value'));
+
+            $('#year_value').html($('#year_' + id).attr('value'));
+            $('#year_value').attr('value', $('#year_' + id).attr('value'));
+            console.log($('#year_value').attr('value'));
+            //console.log($('#year_' + id).position().top);
+            //scroll_t = $('#year_' + id).position().top;
+
+            $('.btn-primary.year').addClass('btn-default');
+            $('.btn-primary.year').removeClass('btn-primary');
+
+            $('#year_' + id).removeClass('btn-default');
+            $('#year_' + id).addClass('btn-primary');
+
+            //scroll_l = $('#year-scroll').scrollLeft();
+            scroll_t = $('#year_scroll').scrollTop();
+            console.log(scroll_t);
+
+            setTimeout(function () {
+                $("#year-selector").hide();
+                $("#date-separator").hide();
+
+                console.log($('#month_value').attr('value'));
+                console.log($('#day_value').attr('value'));
+                console.log($('#year_value').attr('value'));
+
+                LoadVotersFromDate();
+            }, 500);
+        };
+
+        var LoadVotersFromDate = function () {
+            CheckSession();
+            $("#month-selector").hide();
+            $("#day-selector").hide();
+            $("#year-selector").hide();
+
+            // Show the spinner
+            $('#loadingSpinner').show();
+
+            var root = applicationRoot();
+            var month = parseInt($('#month_value').attr('value'));
+            var day = parseInt($('#day_value').attr('value'));
+            var year = parseInt($('#year_value').attr('value'));
+            var url = root + "/Voter/VoterDateSearch" +
+                "?strDate=" + month.toString() + "/" + day.toString() + "/" + year.toString();
+            //console.log(url);
+            $("#myListDiv").load(url, function () {
+                $('#loadingSpinner').hide();
+                $("#date-separator").hide();
+                $("#myListDiv").show();
+            });
+        };
+
+        var ClearDateList = function () {
+            CheckSession();
+            //$("#date-separator").show();
+
+            $('#month_value').attr('value', 0);
+            EditMonth();
+            //$("#month-selector").show();
+            //$("#day-selector").hide();
+            //$("#year-selector").hide();
+
+            $('#month_value').html('MM');
+            $('#month_value').attr('value', 0);
+
+            $('#day_value').html('DD');
+            $('#day_value').attr('value', 0);
+
+            $('#year_value').html('YYYY');
+            $('#year_value').attr('value', 0);
+
+            $("#myListDiv").html("");
+            $("#myListDiv").hide();
+            $("#loadingSpinner").hide();
+        };
+
+    </script>
+}

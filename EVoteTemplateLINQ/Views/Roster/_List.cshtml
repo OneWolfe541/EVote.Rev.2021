@@ -1,0 +1,119 @@
+﻿@model IEnumerable<EVote.DataModels.VoterDataModel>
+
+
+@if (ViewBag.EmptyList >= 1)
+{
+    <p>@ViewBag.EmptyList Voters</p>
+
+    <table class="table">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="width:100px;">
+                    @Html.ActionLink("Signature", "RosterResult", "Signature", new { barCode = item.BarCode }, new { @class = "btn btn-default" })
+                </td>
+                <td style="padding-right:5px; width:120px; text-align:right;">
+                    <span style="color:gray;">Name </span>
+                </td>
+                <td style="padding-left:0px; width:200px;">
+                    <strong>@Html.DisplayFor(modelItem => item.LastName)</strong>
+                    <br />
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                    @Html.DisplayFor(modelItem => item.MiddleName)
+                    @Html.DisplayFor(modelItem => item.Generation)
+                </td>
+                <td style="padding-right:5px; width:120px; text-align:right;">
+                    <span style="color:gray;">Date of Birth</span>
+                </td>
+                <td style="padding-left:0px; ">
+                    @item.DOB.ToString().Substring(0, item.DOB.ToString().IndexOf(" ") + 1)
+                </td>
+                @if (Session["ShowDistrict"].ToString() == "True")
+                {
+                    <td style="padding-right:5px; width:120px; text-align:right;">
+                        <span style="color:gray;">District</span>
+                    </td>
+                    <td style="padding-left:0px; width:100px;">
+                        @Html.DisplayFor(modelItem => item.DistrictName)
+                    </td>
+                }
+                else
+                {
+                    <td style="padding-right:5px; width:70px; text-align:right;"></td>
+                    <td style="padding-left:0px; width:100px;"></td>
+                }
+            </tr>
+
+            <tr>
+                <td style="border-top: 0px none white; padding-top:0px;">
+                    @if (Session["Spoilable"].ToString() == "True")
+                    {
+                        @Html.ActionLink("Spoil Ballot", "Index", "Spoiled", new { id = item.BarCode }, new { @class = "btn btn-default" })
+                    }
+                    @Html.HiddenFor(modelItem => item.DOBSearch)
+                    @Html.HiddenFor(modelItem => item.LogCode)
+                </td>
+                <td style="border-top: 0px none white; padding-top:0px; padding-right:5px; width:50px; text-align:right;">
+                    <span style="color:gray;">Voted: </span>
+                </td>
+                <td style="border-top: 0px none white; padding-top:0px; padding-left:0px;">
+                    @Html.DisplayFor(modelItem => item.LogDescription)
+                </td>
+                <td style="border-top: 0px none white; padding-top:0px;  padding-right:5px; width:50px; text-align:right;">
+                    <span style="color:gray;">Date/Time:</span>
+                </td>
+                <td style="border-top: 0px none white; padding-top:0px; padding-left:0px;">
+                    @if (Session["Registration"].ToString() != "True")
+                    {
+                        @Html.DisplayFor(modelItem => item.LogDate)
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.RegisteredDate)                        
+                    }                    
+                    @*@{
+                          // DATE TIME CONVERSION FROM TIMESTAMP IS NOT CORRECT
+                          long longvar = BitConverter.ToInt64(item.timestamp, 0);
+                          //DateTime dateTimeVar = new DateTime(1980, 1, 1).AddMilliseconds(longvar);
+                          DateTime dateTimeVar = DateTime.FromBinary(longvar);
+                          @Html.Raw(dateTimeVar.ToShortDateString());
+                        }*@
+                </td>
+                <td style="border-top: 0px none white; padding-top:0px;  padding-right:5px; width:100px; text-align:right;">
+                    <span style="color:gray;">Voted at: </span>
+                </td>
+                <td style="border-top: 0px none white; padding-top:0px; padding-left:0px;">
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+            </tr>
+        }
+
+        @*Only show paging features when displaying an unfiltered list*@
+        @if(ViewBag.CurrentPage != -1)
+        {
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td colspan="3">
+                    <table>
+                        <tr>
+                            <td style="border: 0 none white;">@Html.ActionLink("Prev", "Index", "Roster", new { page = ViewBag.CurrentPage - 1 }, new { @class = "btn btn-default" })</td>
+                            <td style="border: 0 none white;">Page @ViewBag.CurrentPage of @ViewBag.TotalPages</td>
+                            <td style="border: 0 none white;">@Html.ActionLink("Next", "Index", "Roster", new { page = ViewBag.CurrentPage + 1 }, new { @class = "btn btn-default" })</td>
+                        </tr>
+                    </table>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+        }
+
+    </table>
+}
+else
+{
+    <div class="col-sm-4 pull-right">
+        <p style="font-size:1.5em; color:red; font-weight:600;">No Voters Found</p>
+    </div>
+}
